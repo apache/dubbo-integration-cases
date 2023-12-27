@@ -61,20 +61,22 @@ public class GreetingServiceIT {
         message = greetingsService.echo2("hello");
         Assertions.assertEquals("hello", message);
 
-        String result = HttpUtil.get("http://127.0.0.1:22333/metrics");
-        Map<String, String> data = new HashMap<>();
-        for (String line : result.split("\n")) {
-            if (line.startsWith("dubbo_consumer_rt_milliseconds_avg")) {
-                if (line.contains("echo1")) {
-                    data.put("echo1", line.split(" ")[1]);
-                } else if (line.contains("echo2")) {
-                    data.put("echo2", line.split(" ")[1]);
+        for (int i = 0; i < 10; i++) {
+            String result = HttpUtil.get("http://127.0.0.1:22333/metrics");
+            Map<String, String> data = new HashMap<>();
+            for (String line : result.split("\n")) {
+                if (line.startsWith("dubbo_consumer_rt_milliseconds_avg")) {
+                    if (line.contains("echo1")) {
+                        data.put("echo1", line.split(" ")[1]);
+                    } else if (line.contains("echo2")) {
+                        data.put("echo2", line.split(" ")[1]);
+                    }
                 }
             }
+            Assertions.assertEquals(2, data.size());
+            Assertions.assertTrue(Double.parseDouble(data.get("echo1")) > 0);
+            Assertions.assertTrue(Double.parseDouble(data.get("echo2")) > 0);
         }
-        Assertions.assertEquals(2, data.size());
-        Assertions.assertTrue(Double.parseDouble(data.get("echo1")) > 0);
-        Assertions.assertTrue(Double.parseDouble(data.get("echo2")) > 0);
 
         DefaultMetricsCollector metricsCollector = FrameworkModel.defaultModel().defaultApplication().getBeanFactory().getBean(DefaultMetricsCollector.class);
         Method getStatsMethod = CombMetricsCollector.class.getDeclaredMethod("getStats");
@@ -92,20 +94,23 @@ public class GreetingServiceIT {
             ((AtomicLong)value).set(0);
         }
 
-        result = HttpUtil.get("http://127.0.0.1:22333/metrics");
-        data = new HashMap<>();
-        for (String line : result.split("\n")) {
-            if (line.startsWith("dubbo_consumer_rt_milliseconds_avg")) {
-                if (line.contains("echo1")) {
-                    data.put("echo1", line.split(" ")[1]);
-                } else if (line.contains("echo2")) {
-                    data.put("echo2", line.split(" ")[1]);
+        for (int i = 0; i < 10; i++) {
+            String result = HttpUtil.get("http://127.0.0.1:22333/metrics");
+            Map<String, String> data = new HashMap<>();
+            for (String line : result.split("\n")) {
+                if (line.startsWith("dubbo_consumer_rt_milliseconds_avg")) {
+                    if (line.contains("echo1")) {
+                        data.put("echo1", line.split(" ")[1]);
+                    } else if (line.contains("echo2")) {
+                        data.put("echo2", line.split(" ")[1]);
+                    }
                 }
             }
+            Assertions.assertEquals(2, data.size());
+            Assertions.assertEquals(0, Double.parseDouble(data.get("echo1")));
+            Assertions.assertEquals(0, Double.parseDouble(data.get("echo2")));
         }
-        Assertions.assertEquals(2, data.size());
-        Assertions.assertEquals(0, Double.parseDouble(data.get("echo1")));
-        Assertions.assertEquals(0, Double.parseDouble(data.get("echo2")));
+
 
         FrameworkModel.destroyAll();
     }
