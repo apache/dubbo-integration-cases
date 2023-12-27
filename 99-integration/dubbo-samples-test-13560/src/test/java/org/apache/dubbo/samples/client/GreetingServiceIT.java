@@ -37,7 +37,6 @@ public class GreetingServiceIT {
         referenceConfig.setInterface(GreetingsService.class);
         GreetingsService greetingsService = referenceConfig.get();
         Assertions.assertEquals("World", greetingsService.echo("World"));
-
         FrameworkModel.destroyAll();
     }
 }
