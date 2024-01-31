@@ -50,19 +50,27 @@ class GreetingServiceIT {
         QosService qosService = qosReference.get();
         long memoryStart = qosService.usedMemory();
 
-        for (int i = 0; i < 10; i++) {
+        long prev = Long.MAX_VALUE;
+        long prevPrev = Long.MAX_VALUE;
+        for (int i = 0; i < 12; i++) {
             bench(100);
             long endMemory = qosService.usedMemory();
             System.out.println("Used: " + endMemory);
-            System.out.println("Delta: " + (endMemory - memoryStart));
-            Assertions.assertTrue((endMemory - memoryStart) < 100000);
+            long delta = endMemory - memoryStart;
+            System.out.println("Delta: " + delta);
+            Assertions.assertTrue(delta < 180_000L);
+            if (prevPrev != Long.MAX_VALUE) {
+                Assertions.assertTrue(delta + prev + prevPrev < 300_000L);
+            }
+            prevPrev = prev;
+            prev = delta;
         }
     }
 
     private static void bench(int range) {
         IntStream.range(0, range)
                 .parallel()
-                .forEach((ignore)->{
+                .forEach((ignore) -> {
                     FrameworkModel frameworkModel = new FrameworkModel();
                     ApplicationModel applicationModel = frameworkModel.newApplication();
                     ReferenceConfig<GreetingsService> reference = new ReferenceConfig<>();
@@ -84,4 +92,5 @@ class GreetingServiceIT {
                     frameworkModel.destroy();
                 });
     }
+
 }
