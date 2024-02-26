@@ -34,18 +34,18 @@ services:
       - zookeeper
 
   dubbo-samples-test-13751-provider-tri:
-      type: app
-      basedir: dubbo-samples-test-13751-provider-tri
-      mainClass: org.apache.dubbo.samples.test.TripleProvider
-      systemProps:
-          - zookeeper.address=zookeeper
-      waitPortsBeforeRun:
-          - zookeeper:2181
-      checkPorts:
-          - 50050
-      checkLog: "dubbo service started"
-      depends_on:
-          - zookeeper
+    type: app
+    basedir: dubbo-samples-test-13751-provider-tri
+    mainClass: org.apache.dubbo.samples.test.TripleProvider
+    systemProps:
+      - zookeeper.address=zookeeper
+    waitPortsBeforeRun:
+      - zookeeper:2181
+    checkPorts:
+      - 50050
+    checkLog: "dubbo service started"
+    depends_on:
+      - zookeeper
 
   dubbo-samples-test-13751-consumer:
     type: test

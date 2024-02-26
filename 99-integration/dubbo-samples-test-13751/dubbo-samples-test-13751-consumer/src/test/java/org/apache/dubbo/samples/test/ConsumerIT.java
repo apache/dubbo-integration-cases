@@ -48,16 +48,22 @@ public class ConsumerIT {
                 .consumer(consumerConfig)
                 .start();
 
+        CustomFilter.resetExpected();
         DemoService demoService = reference1.get();
         demoService.sayHello(new User("dubbo"));
 
-        int dubboExpected = CustomFilter.expected();
-        Assert.assertNotEquals(0, dubboExpected);
+        String dubboExpectHost = CustomFilter.expectedHost();
+        Assert.assertNotNull(dubboExpectHost);
+        int dubboExpectedPort = CustomFilter.expectedPort();
+        Assert.assertNotEquals(0, dubboExpectedPort);
 
+        CustomFilter.resetExpected();
         CallTripleService callTripleService = reference2.get();
         callTripleService.sayHello(new User("triple"));
 
-        int tripleExpected = CustomFilter.expected();
+        String tripleExpectHost = CustomFilter.expectedHost();
+        Assert.assertNotNull(tripleExpectHost);
+        int tripleExpected = CustomFilter.expectedPort();
         Assert.assertNotEquals(0, tripleExpected);
 
     }

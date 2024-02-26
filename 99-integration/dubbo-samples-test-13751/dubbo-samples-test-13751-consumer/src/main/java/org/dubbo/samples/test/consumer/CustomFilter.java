@@ -26,29 +26,39 @@ import org.apache.dubbo.rpc.RpcException;
 import org.apache.dubbo.rpc.RpcServiceContext;
 
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Activate(order = 50, group = {"consumer"})
 public class CustomFilter implements Filter {
 
-    private static final AtomicInteger invoked = new AtomicInteger(0);
+    private static final AtomicReference<String> INVOKED_HOST = new AtomicReference<>(null);
+
+    private static final AtomicInteger INVOKED_PORT = new AtomicInteger(0);
 
     @Override
     public Result invoke(Invoker<?> invoker, Invocation invocation) throws RpcException {
         return invoker.invoke(invocation).whenCompleteWithContext(
                 (r, t) -> {
                     RpcServiceContext serviceContext = RpcContext.getServiceContext();
-                    String localAddress = serviceContext.getLocalAddressString();
-                    String remoteAddress = serviceContext.getRemoteAddressString();
-                    System.out.println("自定义日志local:" + localAddress);
-                    System.out.println("自定义日志remote:" + remoteAddress);
+                    String hostString = serviceContext.getLocalAddress().getHostString();
+                    INVOKED_HOST.set(hostString);
                     int port = serviceContext.getLocalAddress().getPort();
-                    invoked.set(port);
+                    INVOKED_PORT.set(port);
                 }
         );
     }
 
-    public static int expected() {
-        return invoked.get();
+    public static String expectedHost() {
+        return INVOKED_HOST.get();
+    }
+
+    public static int expectedPort() {
+        return INVOKED_PORT.get();
+    }
+
+    public static void resetExpected() {
+        INVOKED_HOST.set(null);
+        INVOKED_PORT.set(0);
     }
 
 }
