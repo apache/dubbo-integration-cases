@@ -54,6 +54,7 @@ public class ConsumerIT {
 
         String dubboExpectHost = CustomFilter.expectedHost();
         Assert.assertNotNull(dubboExpectHost);
+        Assert.assertNotEquals("127.0.0.1", dubboExpectHost);
         int dubboExpectedPort = CustomFilter.expectedPort();
         Assert.assertNotEquals(0, dubboExpectedPort);
 
@@ -63,6 +64,7 @@ public class ConsumerIT {
 
         String tripleExpectHost = CustomFilter.expectedHost();
         Assert.assertNotNull(tripleExpectHost);
+        Assert.assertNotEquals("127.0.0.1", tripleExpectHost);
         int tripleExpected = CustomFilter.expectedPort();
         Assert.assertNotEquals(0, tripleExpected);
 
