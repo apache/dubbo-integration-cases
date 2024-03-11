@@ -23,9 +23,9 @@ notifications:
   pullrequests: notifications@dubbo.apache.org
   jira_options: link label link label
 github:
-  features:
-    # Enable issue management
-    issues: false
+    features:
+        # Enable issue management
+        issues: true
     enabled_merge_buttons:
         # enable squash button:
         squash: true
