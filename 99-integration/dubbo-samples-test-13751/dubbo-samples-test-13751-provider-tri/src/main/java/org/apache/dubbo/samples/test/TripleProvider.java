@@ -43,7 +43,7 @@ public class TripleProvider {
 
         DubboBootstrap.getInstance()
                 .application(applicationConfig)
-                .protocol(new ProtocolConfig(CommonConstants.TRIPLE))
+                .protocol(new ProtocolConfig(CommonConstants.TRIPLE, 50050))
                 .registry(new RegistryConfig(ZOOKEEPER_ADDRESS))
                 .service(serviceConfig)
                 .start();

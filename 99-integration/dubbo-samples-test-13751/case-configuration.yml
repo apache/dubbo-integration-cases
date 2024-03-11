@@ -60,4 +60,5 @@ services:
       - dubbo-samples-test-13751-provider-tri:50050
     depends_on:
       - zookeeper
-      - dubbo-samples-test-13751-provider
+      - dubbo-samples-test-13751-provider-dubbo
+      - dubbo-samples-test-13751-provider-tri
