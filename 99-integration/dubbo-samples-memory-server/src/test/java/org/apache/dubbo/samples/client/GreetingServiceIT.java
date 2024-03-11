@@ -32,6 +32,7 @@ import org.junit.jupiter.api.Test;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -50,7 +51,7 @@ class GreetingServiceIT {
     void test() {
         ReferenceConfig<QosService> qosReference = new ReferenceConfig<>();
         qosReference.setInterface(QosService.class);
-        qosReference.setUrl("dubbo://" + System.getProperty("provider_address", "127.0.0.1") + ":50051?serialization=fastjson2");
+        qosReference.setUrl("dubbo://" + System.getProperty("provider_address", "127.0.0.1") + ":20880?serialization=fastjson2");
 
         DubboBootstrap.getInstance()
                 .application(new ApplicationConfig("first-dubbo-consumer"))
@@ -58,7 +59,7 @@ class GreetingServiceIT {
                 .reference(qosReference)
                 .start();
 
-        for (int i = 0; i < 25; i++) {
+        for (int i = 0; i < 50; i++) {
             bench(20);
         }
 
@@ -71,11 +72,12 @@ class GreetingServiceIT {
             bench(20);
             qosService.usedMemory();
             memory.add(BigDecimal.valueOf(qosService.usedMemory()));
+            System.out.println(new Date() + " memory: " + memory.get(i) + " index: " + i);
         }
 
         long avg = memory.stream().reduce(BigDecimal::add).get().divide(BigDecimal.valueOf(memory.size()), RoundingMode.DOWN).longValue();
         for (int i = 0; i < memory.size(); i++) {
-            if (memory.get(i).longValue() > avg + ACCEPTABLE_ERROR) {
+            if (Math.abs(memory.get(i).longValue() - avg) > ACCEPTABLE_ERROR) {
                 Assertions.fail("memory leak, avg: " + avg + ", current: " + memory.get(i) + ", index: " + i);
             }
         }
@@ -90,7 +92,7 @@ class GreetingServiceIT {
                 ApplicationModel applicationModel = frameworkModel.newApplication();
                 ReferenceConfig<GreetingsService> reference = new ReferenceConfig<>();
                 reference.setInterface(GreetingsService.class);
-                reference.setUrl("dubbo://" + System.getProperty("provider_address", "127.0.0.1") + ":50051?serialization=fastjson2");
+                reference.setUrl("dubbo://" + System.getProperty("provider_address", "127.0.0.1") + ":20880?serialization=fastjson2");
 
                 ApplicationConfig applicationConfig = new ApplicationConfig("first-dubbo-consumer");
                 applicationConfig.setRegisterMode("interface");

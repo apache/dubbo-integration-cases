@@ -32,6 +32,7 @@ import org.junit.jupiter.api.Test;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -71,11 +72,12 @@ class GreetingServiceIT {
             bench(20);
             qosService.usedMemory();
             memory.add(BigDecimal.valueOf(qosService.usedMemory()));
+            System.out.println(new Date() + " memory: " + memory.get(i) + " index: " + i);
         }
 
         long avg = memory.stream().reduce(BigDecimal::add).get().divide(BigDecimal.valueOf(memory.size()), RoundingMode.DOWN).longValue();
         for (int i = 0; i < memory.size(); i++) {
-            if (memory.get(i).longValue() > avg + ACCEPTABLE_ERROR) {
+            if (Math.abs(memory.get(i).longValue() - avg) > ACCEPTABLE_ERROR) {
                 Assertions.fail("memory leak, avg: " + avg + ", current: " + memory.get(i) + ", index: " + i);
             }
         }
