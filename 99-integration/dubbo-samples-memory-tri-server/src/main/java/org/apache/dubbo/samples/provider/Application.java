@@ -26,9 +26,6 @@ import org.apache.dubbo.samples.api.GreetingsService;
 import org.apache.dubbo.samples.api.QosService;
 
 public class Application {
-    private static final String ZOOKEEPER_HOST = System.getProperty("zookeeper.address", "127.0.0.1");
-    private static final String ZOOKEEPER_PORT = System.getProperty("zookeeper.port", "2181");
-    private static final String ZOOKEEPER_ADDRESS = "zookeeper://" + ZOOKEEPER_HOST + ":" + ZOOKEEPER_PORT;
 
     public static void main(String[] args) {
         System.setProperty("dubbo.application.metadata.publish.delay", "1");
@@ -39,11 +36,12 @@ public class Application {
         qosService.setInterface(QosService.class);
         qosService.setRef(new QosServiceImpl());
         ApplicationConfig applicationConfig = new ApplicationConfig("first-dubbo-provider");
+        applicationConfig.setRegisterMode("interface");
 
         DubboBootstrap dubboBootstrap = DubboBootstrap.getInstance()
                 .application(applicationConfig)
-                .registry(new RegistryConfig(ZOOKEEPER_ADDRESS))
-                .protocol(new ProtocolConfig("tri", -1))
+                .registry(new RegistryConfig("N/A"))
+                .protocol(new ProtocolConfig("tri", 50051))
                 .service(service)
                 .service(qosService)
                 .start();
