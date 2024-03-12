@@ -13,9 +13,9 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
+ARG JAVA_VER=8
 FROM openjdk:21-jdk-buster as mat-runtime
 
-ARG JAVA_VER=8
 FROM openjdk:${JAVA_VER}-jdk-buster
 
 ARG DEBIAN_MIRROR
