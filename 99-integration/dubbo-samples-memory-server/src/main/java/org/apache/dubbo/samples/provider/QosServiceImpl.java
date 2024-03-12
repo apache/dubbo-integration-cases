@@ -53,6 +53,7 @@ public class QosServiceImpl implements QosService {
                     stringBuilder.append(chars, 0, len);
                 }
             } while (process.isAlive());
+            System.out.println(stringBuilder);
 
             process = Runtime.getRuntime().exec(
                     String.format("/usr/local/mat/ParseHeapDump.sh /tmp/analyze/dump.bin -format=csv org.eclipse.mat.api:overview", pid)
@@ -66,6 +67,7 @@ public class QosServiceImpl implements QosService {
                     stringBuilder.append(chars, 0, len);
                 }
             } while (process.isAlive());
+            System.out.println(stringBuilder);
 
             long size = -1;
             ZipFile zf = new ZipFile("/tmp/analyze/dump_System_Overview.zip");
