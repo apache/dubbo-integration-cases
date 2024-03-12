@@ -37,7 +37,7 @@ import java.util.zip.ZipInputStream;
 
 public class QosServiceImpl implements QosService {
     @Override
-    public long usedMemory() {
+    public synchronized long usedMemory() {
         String pid = ManagementFactory.getRuntimeMXBean().getName().split("@")[0];
         new File("/tmp/analyze").mkdirs();
         try {

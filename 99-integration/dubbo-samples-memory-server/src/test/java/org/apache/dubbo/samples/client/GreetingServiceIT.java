@@ -51,8 +51,7 @@ class GreetingServiceIT {
     void test() {
         ReferenceConfig<QosService> qosReference = new ReferenceConfig<>();
         qosReference.setInterface(QosService.class);
-        qosReference.setTimeout(600000);
-        qosReference.setUrl("dubbo://" + System.getProperty("provider_address", "127.0.0.1") + ":20880?serialization=fastjson2");
+        qosReference.setUrl("dubbo://" + System.getProperty("provider_address", "127.0.0.1") + ":20880?serialization=fastjson2&timeout=600000");
 
         DubboBootstrap.getInstance()
                 .application(new ApplicationConfig("first-dubbo-consumer"))
