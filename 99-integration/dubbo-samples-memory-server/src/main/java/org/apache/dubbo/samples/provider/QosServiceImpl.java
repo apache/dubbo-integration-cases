@@ -56,7 +56,7 @@ public class QosServiceImpl implements QosService {
             System.out.println(stringBuilder);
 
             process = Runtime.getRuntime().exec(
-                    String.format("/usr/local/mat/ParseHeapDump.sh /tmp/analyze/dump.bin -format=csv org.eclipse.mat.api:overview", pid)
+                    String.format("/usr/local/mat/ParseHeapDump.sh /tmp/analyze/dump.bin -format=csv -vm /usr/local/mat-jdk/bin org.eclipse.mat.api:overview", pid)
             );
             stringBuilder = new StringBuilder();
             streamReader = new InputStreamReader(process.getInputStream(), StandardCharsets.UTF_8);

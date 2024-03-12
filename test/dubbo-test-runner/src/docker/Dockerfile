@@ -13,6 +13,8 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
+FROM openjdk:21-jdk-buster as mat-runtime
+
 ARG JAVA_VER=8
 FROM openjdk:${JAVA_VER}-jdk-buster
 
@@ -31,6 +33,8 @@ RUN apt-get update && \
   unzip /tmp/mat.zip -d /tmp && \
   mv /tmp/mat /usr/local/mat/ && \
   rm -rf /tmp/mat.zip
+
+COPY --from=mat-runtime /usr/local/openjdk-21 /usr/local/mat-jdk
 
 VOLUME /usr/local/dubbo/app /usr/local/dubbo/logs
 
