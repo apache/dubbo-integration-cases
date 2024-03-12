@@ -18,18 +18,31 @@ package org.apache.dubbo.samples.provider;
 
 import org.apache.dubbo.samples.api.QosService;
 
+import org.apache.commons.io.FileUtils;
+
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.management.ManagementFactory;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+import java.util.zip.ZipInputStream;
 
 public class QosServiceImpl implements QosService {
     @Override
-    public long usedMemory() {
+    public synchronized long usedMemory() {
         String pid = ManagementFactory.getRuntimeMXBean().getName().split("@")[0];
+        new File("/tmp/analyze").mkdirs();
         try {
             Process process = Runtime.getRuntime().exec(
-                    String.format("jmap -histo:live %s", pid)
+                    String.format("jmap -dump:format=b,file=/tmp/analyze/dump.bin,live %s", pid)
             );
             StringBuilder stringBuilder = new StringBuilder();
             InputStreamReader streamReader = new InputStreamReader(process.getInputStream(), StandardCharsets.UTF_8);
@@ -40,14 +53,49 @@ public class QosServiceImpl implements QosService {
                     stringBuilder.append(chars, 0, len);
                 }
             } while (process.isAlive());
+            System.out.println(stringBuilder);
 
-            String[] strings = stringBuilder.toString().split("\n");
-            for (String string : strings) {
-                if (string.contains("Total")) {
-                    String a = string.trim();
-                    String trim = a.substring(a.lastIndexOf(" ")).trim();
-                    return Long.parseLong(trim);
+            process = Runtime.getRuntime().exec(
+                    String.format("/usr/local/mat/ParseHeapDump.sh /tmp/analyze/dump.bin -format=csv -vm /usr/local/mat-jdk/bin org.eclipse.mat.api:overview", pid)
+            );
+            stringBuilder = new StringBuilder();
+            streamReader = new InputStreamReader(process.getInputStream(), StandardCharsets.UTF_8);
+            do {
+                char[] chars = new char[1024];
+                int len;
+                while ((len = streamReader.read(chars)) != -1) {
+                    stringBuilder.append(chars, 0, len);
                 }
+            } while (process.isAlive());
+            System.out.println(stringBuilder);
+
+            long size = -1;
+            ZipFile zf = new ZipFile("/tmp/analyze/dump_System_Overview.zip");
+            try (ZipInputStream zis = new ZipInputStream(Files.newInputStream(Paths.get("/tmp/analyze/dump_System_Overview.zip")))) {
+                ZipEntry entry = zis.getNextEntry();
+                while (entry != null) {
+                    String entryName = entry.getName();
+                    if (entryName.equals("pages/Heap_Dump_Overview2.csv")) {
+                        BufferedReader br = new BufferedReader(
+                                new InputStreamReader(zf.getInputStream(entry)));
+                        String line;
+                        while ((line = br.readLine()) != null) {
+                            System.out.println(line);
+                            if (line.startsWith("Number of objects")) {
+                                size = Long.parseLong(line.split("\"")[1].replaceAll(",", "").trim());
+                            }
+                        }
+                        br.close();
+                        break;
+                    }
+                    entry = zis.getNextEntry();
+                }
+            }
+
+            FileUtils.deleteDirectory(new File("/tmp/analyze"));
+            if (size > -1) {
+                System.out.println("size: " + size);
+                return size;
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -55,4 +103,5 @@ public class QosServiceImpl implements QosService {
 
         return Runtime.getRuntime().maxMemory() - Runtime.getRuntime().freeMemory();
     }
+
 }

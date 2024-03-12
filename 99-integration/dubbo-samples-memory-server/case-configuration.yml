@@ -41,6 +41,7 @@ services:
       - "**/*IT.class"
     systemProps:
       - zookeeper.address=zookeeper
+      - provider_address=provider
     waitPortsBeforeRun:
       - zookeeper:2181
       - provider:20880
