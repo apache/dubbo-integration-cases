@@ -43,7 +43,7 @@ import java.util.stream.IntStream;
 class GreetingServiceIT {
     private static String zookeeperHost = System.getProperty("zookeeper.address", "127.0.0.1");
 
-    private final static long ACCEPTABLE_ERROR = 20 * 1000;
+    private final static long ACCEPTABLE_ERROR = 1000;
 
     private final static ExecutorService EXECUTOR_SERVICE = Executors.newCachedThreadPool();
 
@@ -51,6 +51,7 @@ class GreetingServiceIT {
     void test() {
         ReferenceConfig<QosService> qosReference = new ReferenceConfig<>();
         qosReference.setInterface(QosService.class);
+        qosReference.setTimeout(600000);
         qosReference.setUrl("tri://" + System.getProperty("provider_address", "127.0.0.1") + ":50051?serialization=fastjson2");
 
         DubboBootstrap.getInstance()
@@ -59,18 +60,21 @@ class GreetingServiceIT {
                 .reference(qosReference)
                 .start();
 
-        for (int i = 0; i < 25; i++) {
-            bench(20);
+        QosService qosService = qosReference.get();
+
+        for (int i = 0; i < 20; i++) {
+            bench(50);
+        }
+        for (int i = 0; i < 5; i++) {
+            bench(10);
+            qosService.usedMemory();
         }
 
-        QosService qosService = qosReference.get();
         List<BigDecimal> memory = new ArrayList<>();
-        qosService.usedMemory();
         memory.add(BigDecimal.valueOf(qosService.usedMemory()));
 
-        for (int i = 0; i < 50; i++) {
-            bench(20);
-            qosService.usedMemory();
+        for (int i = 0; i < 10; i++) {
+            bench(50);
             memory.add(BigDecimal.valueOf(qosService.usedMemory()));
             System.out.println(new Date() + " memory: " + memory.get(i) + " index: " + i);
         }
@@ -103,7 +107,7 @@ class GreetingServiceIT {
                         .start();
 
                 GreetingsService service = reference.get();
-                for (int i = 0; i < 10; i++) {
+                for (int i = 0; i < 1000; i++) {
                     service.sayHi("dubbo");
                 }
                 frameworkModel.destroy();

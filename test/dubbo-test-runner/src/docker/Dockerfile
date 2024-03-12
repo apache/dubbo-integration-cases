@@ -24,7 +24,13 @@ RUN if [ -n "$DEBIAN_MIRROR" ]; then \
 
 RUN apt-get update && \
   apt-get install -y telnet && \
-  rm -rf /var/lib/apt/lists/*
+  rm -rf /var/lib/apt/lists/* && \
+  apt-get clean && \
+  ARCH=`arch` && \
+  wget https://download.eclipse.org/mat/1.15.0/rcp/MemoryAnalyzer-1.15.0.20231206-linux.gtk.${ARCH}.zip -O /tmp/mat.zip && \
+  unzip /tmp/mat.zip -d /tmp && \
+  mv /tmp/mat /usr/local/mat/ && \
+  rm -rf /tmp/mat.zip
 
 VOLUME /usr/local/dubbo/app /usr/local/dubbo/logs
 
