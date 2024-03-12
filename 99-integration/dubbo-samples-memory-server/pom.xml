@@ -45,6 +45,7 @@
         <protobuf-java.version>3.24.3</protobuf-java.version>
         <junit5.version>5.9.2</junit5.version>
         <awaitility.version>4.2.0</awaitility.version>
+        <commons-io.version>2.15.1</commons-io.version>
     </properties>
 
     <dependencies>
@@ -114,5 +115,11 @@
             <artifactId>awaitility</artifactId>
             <version>${awaitility.version}</version>
         </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>${commons-io.version}</version>
+        </dependency>
+
     </dependencies>
 </project>
