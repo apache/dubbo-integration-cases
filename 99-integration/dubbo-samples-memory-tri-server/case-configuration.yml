@@ -33,6 +33,9 @@ services:
     checkLog: "dubbo service started"
     depends_on:
       - zookeeper
+    jvmFlags:
+      - "-XX:-TieredCompilation"
+      - "-XX:+PrintCompilation"
 
   test:
     type: test
