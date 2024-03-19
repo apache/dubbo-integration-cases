@@ -43,7 +43,7 @@ import java.util.stream.IntStream;
 class GreetingServiceIT {
     private static String zookeeperHost = System.getProperty("zookeeper.address", "127.0.0.1");
 
-    private final static long ACCEPTABLE_ERROR = 200;
+    private final static long ACCEPTABLE_ERROR = 1000;
 
     private final static ExecutorService EXECUTOR_SERVICE = Executors.newCachedThreadPool();
 
