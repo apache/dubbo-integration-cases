@@ -33,6 +33,13 @@ services:
     checkLog: "dubbo service started"
     depends_on:
       - zookeeper
+    jvmFlags:
+      - "-XX:CompileThreshold=10"
+      - "-XX:Tier2CompileThreshold=0"
+      - "-XX:Tier3CompileThreshold=10"
+      - "-XX:Tier4CompileThreshold=10"
+      - "-XX:+PrintCompilation"
+      - "-XX:TieredStopAtLevel=2"
 
   test:
     type: test

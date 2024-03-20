@@ -95,7 +95,7 @@ class GreetingServiceIT {
                 ApplicationModel applicationModel = frameworkModel.newApplication();
                 ReferenceConfig<GreetingsService> reference = new ReferenceConfig<>();
                 reference.setInterface(GreetingsService.class);
-                reference.setUrl("dubbo://" + System.getProperty("provider_address", "127.0.0.1") + ":20880?serialization=fastjson2");
+                reference.setUrl("dubbo://" + System.getProperty("provider_address", "127.0.0.1") + ":20880?serialization=fastjson2&timeout=60000");
 
                 ApplicationConfig applicationConfig = new ApplicationConfig("first-dubbo-consumer");
                 applicationConfig.setRegisterMode("interface");
