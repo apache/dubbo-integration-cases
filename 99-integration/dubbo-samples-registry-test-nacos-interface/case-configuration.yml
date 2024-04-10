@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-timeout: 500
+timeout: 600
 
 services:
   nacos-mysql:
