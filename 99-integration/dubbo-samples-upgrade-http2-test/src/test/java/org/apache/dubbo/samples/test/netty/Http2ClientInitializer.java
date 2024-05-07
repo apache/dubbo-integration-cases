@@ -113,7 +113,6 @@ public class Http2ClientInitializer extends ChannelInitializer<SocketChannel> {
                     return;
                 }
                 ctx.close();
-//                throw new IllegalStateException("unknown protocol: " + protocol);
             }
         });
     }
