@@ -30,8 +30,6 @@ import java.util.concurrent.CountDownLatch;
 public class DubboProvider {
 
     public static void main(String[] args) throws InterruptedException {
-        new EmbeddedZooKeeper(2181, false).start();
-
         SpringApplication.run(DubboProvider.class, args);
 
         System.out.println("dubbo service started");
