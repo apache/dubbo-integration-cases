@@ -36,7 +36,7 @@ services:
         type: test
         basedir: .
         tests:
-            - "ConsumerIT.class"
+            - "**/*IT.class"
         systemProps:
             - zookeeper.address=zookeeper
         waitPortsBeforeRun:
