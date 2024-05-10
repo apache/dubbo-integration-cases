@@ -23,14 +23,16 @@ import org.apache.dubbo.config.spring.context.annotation.EnableDubbo;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import java.util.concurrent.CountDownLatch;
 
 @SpringBootApplication
 @EnableDubbo
 public class DubboProvider {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         SpringApplication.run(DubboProvider.class, args);
 
         System.out.println("dubbo service started");
+        new CountDownLatch(1).await();
     }
 }
