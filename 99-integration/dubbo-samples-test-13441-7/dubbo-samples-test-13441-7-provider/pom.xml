@@ -47,6 +47,10 @@
                     <artifactId>hessian-lite</artifactId>
                     <groupId>com.alibaba</groupId>
                 </exclusion>
+                <exclusion>
+                    <artifactId>hessian-lite</artifactId>
+                    <groupId>org.apache.dubbo</groupId>
+                </exclusion>
             </exclusions>
         </dependency>
 

@@ -16,6 +16,7 @@
  */
 package org.apache.dubbo.samples.prefer.serialization;
 
+import org.apache.dubbo.common.Version;
 import org.apache.dubbo.common.serialize.Serialization;
 import org.apache.dubbo.config.ApplicationConfig;
 import org.apache.dubbo.config.ReferenceConfig;
@@ -24,11 +25,11 @@ import org.apache.dubbo.config.bootstrap.DubboBootstrap;
 import org.apache.dubbo.rpc.model.ApplicationModel;
 import org.apache.dubbo.rpc.model.FrameworkModel;
 import org.apache.dubbo.samples.prefer.serialization.api.DemoService;
+
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
 
 // in 3.1.x, service config's serialization > protocol config's serialization
 // in 3.2.x, service config's prefer serialization > service config's serialization >
@@ -66,9 +67,10 @@ public class ConsumerIT {
     public void test1() {
         DemoService demoService = getDemoService("1.0.0");
         Assert.assertEquals("Hello world", demoService.sayHello("world"));
-        Assert.assertTrue(SerializationWrapper.getUsedSerialization().stream().allMatch(s -> s.equals(FASTJSON2_SERIALIZATION_ID)));
+        Byte expectedId = Version.getVersion().startsWith("3.2")
+                ? FASTJSON2_SERIALIZATION_ID : HESSIAN2_SERIALIZATION_ID;
+        Assert.assertTrue(SerializationWrapper.getUsedSerialization().stream().allMatch(s -> s.equals(expectedId)));
     }
-
 
     // protocol config set serialization as java, prefer serialization is set as null
     // service config set serialization as null, prefer serialization is set as null
@@ -245,4 +247,5 @@ public class ConsumerIT {
             SerializationWrapper.getUsedSerialization().clear();
         }
     }
+
 }
