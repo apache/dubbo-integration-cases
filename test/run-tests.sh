@@ -234,6 +234,9 @@ function process_case() {
 
     if [ $result == 0 ]; then
       echo "$log_prefix $TEST_SUCCESS with version: $version_profile, cost $((end_time - start_time)) s"
+      mvn clean &> $project_home/mvn-clean.log
+      docker image prune --filter "reference=seataio/seata-server" -f
+      echo "$log_prefix $TEST_SUCCESS with version: $version_profile, cleaned up target"
     else
       scenario_log=$scenario_home/logs/scenario.log
       error_msg=`get_error_msg $scenario_log`
