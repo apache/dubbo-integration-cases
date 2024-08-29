@@ -17,17 +17,17 @@
 
 package org.apache.dubbo.samples.client;
 
-import org.apache.dubbo.common.utils.PojoUtils;
 import org.apache.dubbo.config.ApplicationConfig;
+import org.apache.dubbo.config.MetricsConfig;
 import org.apache.dubbo.config.ReferenceConfig;
 import org.apache.dubbo.config.RegistryConfig;
+import org.apache.dubbo.config.bootstrap.DubboBootstrap;
 import org.apache.dubbo.metrics.collector.CombMetricsCollector;
 import org.apache.dubbo.metrics.collector.DefaultMetricsCollector;
 import org.apache.dubbo.metrics.data.BaseStatComposite;
 import org.apache.dubbo.metrics.data.RtStatComposite;
 import org.apache.dubbo.metrics.model.container.LongContainer;
 import org.apache.dubbo.rpc.model.FrameworkModel;
-import org.apache.dubbo.rpc.service.GenericService;
 import org.apache.dubbo.samples.api.GreetingsService;
 
 import cn.hutool.http.HttpUtil;
@@ -47,12 +47,21 @@ public class GreetingServiceIT {
 
     @Test
     public void test1() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, NoSuchFieldException {
-        ReferenceConfig<GreetingsService> referenceConfig = new ReferenceConfig<>();
         ApplicationConfig applicationConfig = new ApplicationConfig("first-dubbo-consumer");
         applicationConfig.setQosPort(22333);
-        referenceConfig.setApplication(applicationConfig);
-        referenceConfig.setRegistry(new RegistryConfig("zookeeper://" + zookeeperHost + ":2181"));
+        ReferenceConfig<GreetingsService> referenceConfig = new ReferenceConfig<>();
         referenceConfig.setInterface(GreetingsService.class);
+
+        MetricsConfig metricsConfig = new MetricsConfig();
+        metricsConfig.setEnableRpc(true);
+
+        DubboBootstrap.getInstance()
+                .application(applicationConfig)
+                .metrics(metricsConfig)
+                .registry(new RegistryConfig("zookeeper://" + zookeeperHost + ":2181"))
+                .reference(referenceConfig)
+                .start();
+
         GreetingsService greetingsService = referenceConfig.get();
 
         String message = greetingsService.echo1("hello");
@@ -91,7 +100,7 @@ public class GreetingServiceIT {
         List<LongContainer<? extends Number>> longContainers = rtStats.get("consumer");
         LongContainer<? extends Number> longContainer = longContainers.get(4);
         for (Number value : longContainer.values()) {
-            ((AtomicLong)value).set(0);
+            ((AtomicLong) value).set(0);
         }
 
         for (int i = 0; i < 10; i++) {
@@ -110,7 +119,6 @@ public class GreetingServiceIT {
             Assertions.assertEquals(0, Double.parseDouble(data.get("echo1")));
             Assertions.assertEquals(0, Double.parseDouble(data.get("echo2")));
         }
-
 
         FrameworkModel.destroyAll();
     }
