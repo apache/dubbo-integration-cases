@@ -19,20 +19,20 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>dubbo-samples-prefer-serialization-test</artifactId>
+        <artifactId>dubbo-samples-prefer-serialization-test-32x</artifactId>
         <groupId>org.apache.dubbo</groupId>
         <version>1.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>dubbo-samples-prefer-serialization-test-provider</artifactId>
+    <artifactId>dubbo-samples-prefer-serialization-test-32x-provider</artifactId>
     <name>Dubbo Samples Prefer Serialization Test Provider</name>
     <description>Dubbo Samples Prefer Serialization Integration Test Provider</description>
 
     <dependencies>
         <dependency>
             <groupId>org.apache.dubbo</groupId>
-            <artifactId>dubbo-samples-prefer-serialization-test-api</artifactId>
+            <artifactId>dubbo-samples-prefer-serialization-test-32x-api</artifactId>
         </dependency>
 
         <dependency>
@@ -48,11 +48,6 @@
         <dependency>
             <groupId>org.apache.dubbo.extensions</groupId>
             <artifactId>dubbo-serialization-gson</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.dubbo.extensions</groupId>
-            <artifactId>dubbo-serialization-jdk</artifactId>
         </dependency>
 
         <dependency>

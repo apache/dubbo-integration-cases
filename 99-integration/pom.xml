@@ -44,6 +44,7 @@
         <module>dubbo-samples-port-unification-netty3</module>
         <module>dubbo-samples-prefer-serialization-test</module>
         <module>dubbo-samples-prefer-serialization-test-31x</module>
+        <module>dubbo-samples-prefer-serialization-test-32x</module>
         <module>dubbo-samples-registry-test-curator</module>
         <module>dubbo-samples-registry-test-curator-interface</module>
         <module>dubbo-samples-registry-test-curator-instance</module>
