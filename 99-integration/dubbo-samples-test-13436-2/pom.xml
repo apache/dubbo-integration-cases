@@ -43,7 +43,7 @@
         <junit.version>4.13.1</junit.version>
 
         <maven-compiler-plugin.version>3.7.0</maven-compiler-plugin.version>
-        <protobuf-java.version>3.19.6</protobuf-java.version>
+        <protobuf-java.version>3.25.5</protobuf-java.version>
     </properties>
 
     <modules>
