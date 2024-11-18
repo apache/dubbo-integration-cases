@@ -38,7 +38,7 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <dubbo.version>3.3.1</dubbo.version>
+        <dubbo.version>3.3.2</dubbo.version>
         <zookeeper.version>3.8.4</zookeeper.version>
         <curator.version>5.1.0</curator.version>
         <log4j2.version>2.20.0</log4j2.version>
