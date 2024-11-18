@@ -44,14 +44,15 @@
             <groupId>org.apache.dubbo</groupId>
             <artifactId>dubbo-spring-boot-starter</artifactId>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.dubbo.extensions/dubbo-rpc-rest -->
         <dependency>
-            <groupId>org.apache.dubbo</groupId>
+            <groupId>org.apache.dubbo.extensions</groupId>
             <artifactId>dubbo-rpc-rest</artifactId>
+            <version>${spi.extensions.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.apache.dubbo</groupId>
-            <artifactId>dubbo-dependencies-zookeeper-curator5</artifactId>
-            <type>pom</type>
+          <groupId>org.apache.dubbo</groupId>
+          <artifactId>dubbo-zookeeper-curator5-spring-boot-starter</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
