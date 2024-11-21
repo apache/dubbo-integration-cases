@@ -18,6 +18,18 @@ test_base_dir="$( cd $test_dir/.. && pwd )"
 echo "Searching all '$CONFIG_FILE' under dir $test_base_dir .."
 find $test_base_dir -name $CONFIG_FILE | grep -v "$test_dir" > $test_list_file
 
+ALONE_CASE_COUNT=0
+TOTAL_JOB_COUNT=$JOB_COUNT
+if [ $JOB_COUNT -ge 4 ]; then
+    sed -i '/\/dubbo-samples-memory/d' $test_list_file
+    ALONE_CASE_COUNT=2
+    JOB_COUNT=$((JOB_COUNT - 2))
+    echo "${test_base_dir}/99-integration/dubbo-samples-memory-server" >> $jobs_dir/testjob_$((JOB_COUNT + 1)).txt
+    echo "${test_base_dir}/99-integration/dubbo-samples-memory-tri-server" >> $jobs_dir/testjob_$((JOB_COUNT + 2)).txt
+fi
+
+shuf --random-source=<(yes 1) $test_list_file -o $test_list_file
+
 # Split test list into JOB_COUNT parts
 case_index=0
 while read file
@@ -27,5 +39,5 @@ do
   echo ${file%/$CONFIG_FILE} >> $jobs_dir/testjob_${job}.txt
 done < $test_list_file
 
-echo "Total $case_index cases split into $JOB_COUNT jobs:"
-grep -r "" -c $jobs_dir
+echo "Total $((case_index + ALONE_CASE_COUNT)) cases split into $TOTAL_JOB_COUNT jobs:"
+grep -r "" -c $jobs_dir | sort
