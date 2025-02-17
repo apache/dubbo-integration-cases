@@ -116,7 +116,7 @@ jobs:
         run: |
           bash ./test/scripts/prepare-test.sh
       - name: Upload test list
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: test-list
           path: test/jobs
@@ -155,7 +155,7 @@ jobs:
           path: ~/.m2/repository/org/apache/dubbo
           key: ${{ runner.os }}-dubbo-snapshot-${{needs.build-dubbo.outputs.commit_id}}
       - name: Download test list
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: test-list
           path: test/jobs/
@@ -171,9 +171,9 @@ jobs:
         run: cd test && bash ./run-tests.sh
       - name: Upload test result
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: test-result
+          name: test-result-${{matrix.java}}-${{matrix.job_id}}
           path: test/jobs/*-result*
 
   test_result:
@@ -190,9 +190,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Download test result
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
-          name: test-result
+          pattern: test-result-*
           path: test/jobs/
       - name: Merge test result - java ${{matrix.java}}
         run: ./test/scripts/merge-test-results.sh
