@@ -64,7 +64,8 @@ public class MetadataIT {
         Map<String, MetadataReport> metadataReports = metadataReportInstance.getMetadataReports(true);
         Assert.assertNotNull(metadataReports);
         Assert.assertEquals(1, metadataReports.size());
-        applicationModel.destroy();
+        FrameworkModel.destroyAll();
+
     }
 
     @Test
@@ -96,7 +97,7 @@ public class MetadataIT {
         Map<String, MetadataReport> metadataReports = metadataReportInstance.getMetadataReports(true);
         Assert.assertNotNull(metadataReports);
         Assert.assertEquals(1, metadataReports.size());
-        applicationModel.destroy();
+        FrameworkModel.destroyAll();
     }
 
     @Test
@@ -130,7 +131,7 @@ public class MetadataIT {
         Map<String, MetadataReport> metadataReports = metadataReportInstance.getMetadataReports(true);
         Assert.assertNotNull(metadataReports);
         Assert.assertEquals(0, metadataReports.size());
-        applicationModel.destroy();
+        FrameworkModel.destroyAll();
     }
 
     @Test
@@ -161,7 +162,7 @@ public class MetadataIT {
             Assert.assertTrue(e.getMessage().contains("Please specify valid protocol or address for metadata report"));
         }
 
-        applicationModel.destroy();
+        FrameworkModel.destroyAll();
     }
 
     @Test
@@ -197,7 +198,7 @@ public class MetadataIT {
         Map<String, MetadataReport> metadataReports = metadataReportInstance.getMetadataReports(true);
         Assert.assertNotNull(metadataReports);
         Assert.assertEquals(0, metadataReports.size());
-        applicationModel.destroy();
+        FrameworkModel.destroyAll();
     }
 
     @Test
@@ -232,7 +233,7 @@ public class MetadataIT {
         Assert.assertEquals(1, metadataReports.size());
         AbstractMetadataReport report = (AbstractMetadataReport) metadataReports.entrySet().iterator().next().getValue();
         Assert.assertFalse(report.getUrl().getParameter("cycle-report", true));
-        applicationModel.destroy();
+        FrameworkModel.destroyAll();
     }
 
     @Test
@@ -267,6 +268,6 @@ public class MetadataIT {
         Assert.assertEquals(1, metadataReports.size());
         AbstractMetadataReport report = (AbstractMetadataReport) metadataReports.entrySet().iterator().next().getValue();
         Assert.assertFalse(report.shouldReportMetadata());
-        applicationModel.destroy();
+        FrameworkModel.destroyAll();
     }
 }
