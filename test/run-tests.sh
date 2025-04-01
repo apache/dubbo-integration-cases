@@ -232,6 +232,9 @@ function process_case() {
     result=$?
     end_time=$SECONDS
 
+    mkdir $TEST_DIR/logs/$scenario_name/
+    cp -f $project_home/target/logs/*.log $TEST_DIR/logs/$scenario_name/
+
     if [ $result == 0 ]; then
       echo "$log_prefix $TEST_SUCCESS with version: $version_profile, cost $((end_time - start_time)) s"
       mvn clean &> $project_home/mvn-clean.log
@@ -293,6 +296,8 @@ echo "Test reports dir: \${project.basedir}/target/test-reports"
 
 # prepare testcases
 mkdir -p $TEST_DIR/jobs
+mkdir -p $TEST_DIR/logs
+
 testListFile=$TEST_DIR/jobs/testjob.txt
 targetTestcases=$1
 if [ "$targetTestcases" != "" ];then
