@@ -109,6 +109,12 @@
                 <groupId>org.apache.dubbo.extensions</groupId>
                 <artifactId>dubbo-serialization-jdk</artifactId>
                 <version>${dubbo-serialization-gson.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>com.alibaba</groupId>
+                        <artifactId>hessian-lite</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
             <dependency>
