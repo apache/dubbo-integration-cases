@@ -23,8 +23,8 @@ env:
   VERSIONS_LIMIT: 4
   #candidate versions (the dubbo snapshot version will be extracted from pom.xml and appended before CANDIDATE_VERSIONS )
   CANDIDATE_VERSIONS: '
-    spring.version:5.3.24;
-    spring-boot.version:2.7.6;
+    spring.version:5.3.24,6.1.5;
+    spring-boot.version:2.7.6,3.2.3;
     '
   DUBBO_REF: '3.3'
 
@@ -173,7 +173,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: test-result-${{matrix.java}}-${{matrix.job_id}}
+          name: test-result-${{matrix.job_id}}-java${{matrix.java}}
           path: test/jobs/*-result*
 
   test_result:
@@ -192,7 +192,8 @@ jobs:
       - name: Download test result
         uses: actions/download-artifact@v4
         with:
-          pattern: test-result-*
+          pattern: test-result-*-java${{matrix.java}}
           path: test/jobs/
+          merge-multiple: true
       - name: Merge test result - java ${{matrix.java}}
         run: ./test/scripts/merge-test-results.sh
