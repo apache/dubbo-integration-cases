@@ -49,13 +49,15 @@ public class GreetingServiceIT {
             Assertions.assertEquals("hi, dubbo", message);
         }
 
+        // make nextReservationStreamId less than zero to trigger server sending back GO_AWAY frame on next rpc.
         List<Http2Connection.Endpoint<Http2LocalFlowController>> endpoints = WireProtocolWrapper.getEndpoints();
         Assertions.assertEquals(1, endpoints.size());
         Http2Connection.Endpoint<Http2LocalFlowController> endpoint = endpoints.get(0);
-        while (endpoint.incrementAndGetNextStreamId() > 0) {
+        while (endpoint.incrementAndGetNextStreamId() >= 0) {
             endpoint.incrementAndGetNextStreamId();
         }
 
+        // get server GO_AWAY frame and reconnect to server.
         try {
             service.sayHi("dubbo");
             Assertions.fail();
@@ -63,8 +65,16 @@ public class GreetingServiceIT {
             Assertions.assertEquals("java.util.concurrent.ExecutionException: org.apache.dubbo.rpc.StatusRpcException: INTERNAL : Http2 exception", e.getMessage());
         }
 
+        // wait connection reconnected.
         await().atMost(60, TimeUnit.SECONDS).untilAsserted(
                 () -> Assertions.assertEquals(2, endpoints.size()));
+
+        // wait invoker re-valid to avoid RpcException with no provider available.
+        try {
+            reference.checkOrDestroy(1000);
+        } catch (IllegalStateException e) {
+            Assertions.fail();
+        }
 
         for (int i = 0; i < 100; i++) {
             String message = service.sayHi("dubbo");
