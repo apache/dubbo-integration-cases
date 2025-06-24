@@ -82,7 +82,8 @@ public class GreetingServiceIT {
                     }
                 }
             }
-            Assertions.assertEquals(2, data.size());
+            // TODO sometimes there are no dubbo_consumer_rt_milliseconds_avg in the result.
+            Assertions.assertEquals(2, data.size(), "FAIL result: " + result);
             Assertions.assertTrue(Double.parseDouble(data.get("echo1")) > 0);
             Assertions.assertTrue(Double.parseDouble(data.get("echo2")) > 0);
         }
