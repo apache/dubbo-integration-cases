@@ -69,9 +69,10 @@ public class GreetingServiceIT {
         await().atMost(60, TimeUnit.SECONDS).untilAsserted(
                 () -> Assertions.assertEquals(2, endpoints.size()));
 
-        // wait invoker re-valid to avoid RpcException with no provider available.
+        // By default, connectivityExecutor delays 1s to set invoker re-valid,
+        // so wait at most 2s to avoid RpcException with no provider available.
         try {
-            reference.checkOrDestroy(1000);
+            reference.checkOrDestroy(2000);
         } catch (IllegalStateException e) {
             Assertions.fail();
         }
