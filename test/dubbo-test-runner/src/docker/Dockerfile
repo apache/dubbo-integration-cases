@@ -32,7 +32,9 @@ RUN apt-get update && \
   wget https://download.eclipse.org/mat/1.15.0/rcp/MemoryAnalyzer-1.15.0.20231206-linux.gtk.${ARCH}.zip -O /tmp/mat.zip && \
   unzip /tmp/mat.zip -d /tmp && \
   mv /tmp/mat /usr/local/mat/ && \
-  rm -rf /tmp/mat.zip
+  rm -rf /tmp/mat.zip && \
+  sysctl -w net.ipv4.ip_local_reserved_ports="50050-50059" && \
+  sysctl -p
 
 COPY --from=mat-runtime /usr/local/openjdk-21 /usr/local/mat-jdk
 
