@@ -17,9 +17,6 @@
 
 package org.apache.dubbo.samples.client;
 
-import io.micrometer.prometheus.PrometheusMeterRegistry;
-import io.prometheus.client.Collector;
-import io.prometheus.client.CollectorRegistry;
 import org.apache.dubbo.common.beans.factory.ScopeBeanFactory;
 import org.apache.dubbo.config.ApplicationConfig;
 import org.apache.dubbo.config.MetricsConfig;
@@ -31,7 +28,6 @@ import org.apache.dubbo.metrics.collector.DefaultMetricsCollector;
 import org.apache.dubbo.metrics.data.BaseStatComposite;
 import org.apache.dubbo.metrics.data.RtStatComposite;
 import org.apache.dubbo.metrics.model.container.LongContainer;
-import org.apache.dubbo.metrics.prometheus.PrometheusMetricsReporter;
 import org.apache.dubbo.rpc.model.FrameworkModel;
 import org.apache.dubbo.samples.api.GreetingsService;
 
@@ -45,22 +41,18 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
-
-import static org.awaitility.Awaitility.await;
 
 public class GreetingServiceIT {
     private static String zookeeperHost = System.getProperty("zookeeper.address", "127.0.0.1");
 
     @SuppressWarnings("unchecked")
     @Test
-    public void test1() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, NoSuchFieldException {
+    public void test1() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, NoSuchFieldException, InterruptedException {
         ApplicationConfig applicationConfig = new ApplicationConfig("first-dubbo-consumer");
         applicationConfig.setQosPort(22333);
         ReferenceConfig<GreetingsService> referenceConfig = new ReferenceConfig<>();
         referenceConfig.setInterface(GreetingsService.class);
-
         MetricsConfig metricsConfig = new MetricsConfig();
         metricsConfig.setEnableRpc(true);
 
@@ -80,21 +72,11 @@ public class GreetingServiceIT {
         Assertions.assertEquals("hello", message);
 
         // wait for dubbo_consumer_rt_milliseconds_avg to be registered by metric collector sync job thread.
-        ScopeBeanFactory scopeBeanFactory = FrameworkModel.defaultModel().defaultApplication().getBeanFactory();
-        Object reporter = scopeBeanFactory.getBean(PrometheusMetricsReporter.class);
-        Field prometheusRegistryField = reporter.getClass().getDeclaredField("prometheusRegistry");
-        prometheusRegistryField.setAccessible(true);
-        PrometheusMeterRegistry prometheusRegistry = (PrometheusMeterRegistry) prometheusRegistryField.get(reporter);
-        CollectorRegistry collectorRegistry = prometheusRegistry.getPrometheusRegistry();
-        Field namesToCollectorsField = collectorRegistry.getClass().getDeclaredField("namesToCollectors");
-        namesToCollectorsField.setAccessible(true);
-        Map<String, Collector> collector = (Map<String, Collector>) namesToCollectorsField.get(collectorRegistry);
-        await().atMost(5, TimeUnit.SECONDS).untilAsserted(
-                () -> Assertions.assertTrue(collector.containsKey("dubbo_consumer_rt_milliseconds_avg")));
-
+        String result = null;
+        Map<String, String> data = new HashMap<>();
         for (int i = 0; i < 10; i++) {
-            String result = HttpUtil.get("http://127.0.0.1:22333/metrics");
-            Map<String, String> data = new HashMap<>();
+            result = HttpUtil.get("http://127.0.0.1:22333/metrics");
+            boolean hasAvg = false;
             for (String line : result.split("\n")) {
                 if (line.startsWith("dubbo_consumer_rt_milliseconds_avg")) {
                     if (line.contains("echo1")) {
@@ -102,13 +84,19 @@ public class GreetingServiceIT {
                     } else if (line.contains("echo2")) {
                         data.put("echo2", line.split(" ")[1]);
                     }
+                    hasAvg = true;
                 }
             }
-            Assertions.assertEquals(2, data.size(), "FAIL result: " + result);
-            Assertions.assertTrue(Double.parseDouble(data.get("echo1")) > 0);
-            Assertions.assertTrue(Double.parseDouble(data.get("echo2")) > 0);
+            if (hasAvg) {
+                break;
+            }
+            Thread.sleep(1000);
         }
+        Assertions.assertEquals(2, data.size(), "FAIL result: " + result);
+        Assertions.assertTrue(Double.parseDouble(data.get("echo1")) > 0);
+        Assertions.assertTrue(Double.parseDouble(data.get("echo2")) > 0);
 
+        ScopeBeanFactory scopeBeanFactory = FrameworkModel.defaultModel().defaultApplication().getBeanFactory();
         DefaultMetricsCollector metricsCollector = scopeBeanFactory.getBean(DefaultMetricsCollector.class);
         Method getStatsMethod = CombMetricsCollector.class.getDeclaredMethod("getStats");
         getStatsMethod.setAccessible(true);
@@ -126,8 +114,8 @@ public class GreetingServiceIT {
         }
 
         for (int i = 0; i < 10; i++) {
-            String result = HttpUtil.get("http://127.0.0.1:22333/metrics");
-            Map<String, String> data = new HashMap<>();
+            result = HttpUtil.get("http://127.0.0.1:22333/metrics");
+            data = new HashMap<>();
             for (String line : result.split("\n")) {
                 if (line.startsWith("dubbo_consumer_rt_milliseconds_avg")) {
                     if (line.contains("echo1")) {
