@@ -23,7 +23,7 @@ import org.apache.dubbo.config.annotation.DubboService;
 import org.apache.dubbo.samples.rest.withtoken.api.DemoService;
 
 /**
- * @author shenfeng
+ * DemoServiceImpl
  */
 @DubboService(protocol = "rest",token = "true")
 public class DemoServiceImpl implements DemoService {

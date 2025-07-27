@@ -24,7 +24,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
- * @author shenfeng
+ * Application
  */
 @SpringBootApplication
 @EnableDubbo(scanBasePackages = {"org.apache.dubbo.rest.withtoken.provider.service.impl"})
