@@ -26,7 +26,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 
 /**
- * @author shenfeng
+ * Application
  */
 @SpringBootApplication
 @EnableDubbo
