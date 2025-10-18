@@ -17,7 +17,7 @@
 services:
   nacos:
     # set large DB_POOL_CONNECTION_TIMEOUT (provided since nacos-server v2.3.1+) to avoid login timeout.
-    image: nacos/nacos-server:v2.3.1-slim
+    image: nacos/nacos-server:v2.5.1-slim
     environment:
       - PREFER_HOST_MODE=hostname
       - MODE=standalone
