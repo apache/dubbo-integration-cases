@@ -34,7 +34,7 @@ RUN apt-get update && \
   mv /tmp/mat /usr/local/mat/ && \
   rm -rf /tmp/mat.zip
 
-COPY --from=mat-runtime /usr/local/openjdk-21 /usr/local/mat-jdk
+COPY --from=mat-runtime /opt/java/openjdk /usr/local/mat-jdk
 
 VOLUME /usr/local/dubbo/app /usr/local/dubbo/logs
 
