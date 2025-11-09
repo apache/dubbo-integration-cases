@@ -30,7 +30,7 @@ services:
       - JVM_XMX=512m
       - JVM_XMN=256m
 
-  dubbo-samples-test-11096-test:
+  dubbo-samples-test-11137-test:
     type: test
     basedir: .
     tests:
