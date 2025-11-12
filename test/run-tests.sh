@@ -201,8 +201,8 @@ function process_case() {
       return 1
     fi
 
-    # list files of all target directories
-    find `pwd` -name target -print -exec ls -1 {} \;
+    # list files of all dependency directories
+    find `pwd` -name dependency -print -exec ls -1 {} \;
 
     # generate case configuration
     mkdir -p $scenario_home/logs
