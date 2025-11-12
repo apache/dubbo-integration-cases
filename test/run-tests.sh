@@ -228,6 +228,9 @@ function process_case() {
       return $result
     fi
 
+    mount_msg=`grep mount $scenario_builder_log`
+    echo "$log_prefix $mount_msg"
+
     # run test
     echo "$log_prefix Running test case .."
     running_time=$SECONDS
