@@ -23,13 +23,26 @@ notifications:
   pullrequests: notifications@dubbo.apache.org
   jira_options: link label link label
 github:
-    features:
+  features:
         # Enable issue management
-        issues: true
-    enabled_merge_buttons:
+    issues: true
+  enabled_merge_buttons:
         # enable squash button:
-        squash: true
+    squash: true
         # enable merge button:
-        merge: false
+    merge: false
         # disable rebase button:
-        rebase: false
+    rebase: false
+  rulesets:
+    - name: "Default Branch Protection"
+      type: branch
+      branches:
+        includes:
+          - "~DEFAULT_BRANCH"
+          - "release/*"
+          - "rel/*"
+        excludes: []
+      bypass_teams:
+        - root
+      restrict_deletion: true
+      restrict_force_push: true
